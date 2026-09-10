@@ -8,6 +8,7 @@ from app.domain.exceptions import (
     EncryptedPdfError,
     FileTooLargeError,
     InvalidBase64Error,
+    NoExtractableTextError,
 )
 from app.domain.ports.payload_decoder import PayloadDecoder
 from app.domain.ports.pdf_extractor import PdfExtractor
@@ -91,6 +92,23 @@ class TestPdfExtractionService:
             service.extract("b64", max_size_bytes=100)
 
         assert extractor.received == []
+
+    def test_raises_no_extractable_text_when_every_page_is_empty(self):
+        service = PdfExtractionService(
+            FakeDecoder(b"data"), FakeExtractor(_document("", ""))
+        )
+
+        with pytest.raises(NoExtractableTextError):
+            service.extract("b64", max_size_bytes=100)
+
+    def test_accepts_document_with_some_non_empty_pages(self):
+        service = PdfExtractionService(
+            FakeDecoder(b"data"), FakeExtractor(_document("", "hi"))
+        )
+
+        result = service.extract("b64", max_size_bytes=100)
+
+        assert result.total_pages == 2
 
     def test_propagates_decoder_errors_unchanged(self):
         service = PdfExtractionService(

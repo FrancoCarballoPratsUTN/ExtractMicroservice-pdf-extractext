@@ -1,7 +1,7 @@
 """Application service orchestrating the PDF extraction use case."""
 
 from app.domain.entities.extracted_document import ExtractedDocument
-from app.domain.exceptions import FileTooLargeError
+from app.domain.exceptions import FileTooLargeError, NoExtractableTextError
 from app.domain.ports.payload_decoder import PayloadDecoder
 from app.domain.ports.pdf_extractor import PdfExtractor
 
@@ -23,4 +23,7 @@ class PdfExtractionService:
             raise FileTooLargeError(
                 "The decoded file exceeds the configured size limit."
             )
-        return self._extractor.extract(data)
+        document = self._extractor.extract(data)
+        if document.total_characters == 0:
+            raise NoExtractableTextError("The PDF does not contain extractable text.")
+        return document
