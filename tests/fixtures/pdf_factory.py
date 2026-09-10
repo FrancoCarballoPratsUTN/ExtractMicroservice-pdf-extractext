@@ -35,11 +35,26 @@ def _add_text_page(writer: PdfWriter, text: str) -> None:
     )
 
 
-def build_pdf_bytes(pages_text: Sequence[str]) -> bytes:
-    """Build a minimal multi-page PDF, one page per string in ``pages_text``."""
+def _build_writer(pages_text: Sequence[str]) -> PdfWriter:
     writer = PdfWriter()
     for text in pages_text:
         _add_text_page(writer, text)
+    return writer
+
+
+def build_pdf_bytes(pages_text: Sequence[str]) -> bytes:
+    """Build a minimal multi-page PDF, one page per string in ``pages_text``."""
+    return _write(_build_writer(pages_text))
+
+
+def build_encrypted_pdf_bytes(pages_text: Sequence[str]) -> bytes:
+    """Build a password-protected PDF requiring a user password to open."""
+    writer = _build_writer(pages_text)
+    writer.encrypt(user_password="secret", owner_password="secret")
+    return _write(writer)
+
+
+def _write(writer: PdfWriter) -> bytes:
     buffer = BytesIO()
     writer.write(buffer)
     return buffer.getvalue()
