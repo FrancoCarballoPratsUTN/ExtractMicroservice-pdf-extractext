@@ -88,13 +88,13 @@ return `ExtractedDocument`.
 port: strict, in-memory Base64 decoding; corrupt payload → `InvalidBase64Error`.
 
 **Acceptance criteria:**
-- [ ] Valid standard Base64 → decoded `bytes`
-- [ ] Rejects urlsafe/whitespace/non-Base64 payloads → `InvalidBase64Error`
-- [ ] Decoding is in-memory (no temp files)
+- [x] Valid standard Base64 → decoded `bytes`
+- [x] Rejects urlsafe/whitespace/non-Base64 payloads → `InvalidBase64Error`
+- [x] Decoding is in-memory (no temp files)
 
 **Verification:**
-- [ ] Tests pass: `uv run pytest tests/integration/infrastructure -q`
-- [ ] Lint clean: `uv run ruff check .`
+- [x] Tests pass: `uv run pytest tests/integration/infrastructure -q` → 13 passed
+- [x] Lint clean: `uv run ruff check .`
 
 **Dependencies:** Task 2
 
