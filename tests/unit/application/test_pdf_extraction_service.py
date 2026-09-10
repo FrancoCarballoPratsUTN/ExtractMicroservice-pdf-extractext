@@ -4,7 +4,11 @@ import pytest
 
 from app.application.services.pdf_extraction_service import PdfExtractionService
 from app.domain.entities.extracted_document import ExtractedDocument, ExtractedPage
-from app.domain.exceptions import EncryptedPdfError, InvalidBase64Error
+from app.domain.exceptions import (
+    EncryptedPdfError,
+    FileTooLargeError,
+    InvalidBase64Error,
+)
 from app.domain.ports.payload_decoder import PayloadDecoder
 from app.domain.ports.pdf_extractor import PdfExtractor
 
@@ -63,6 +67,30 @@ class TestPdfExtractionService:
         service.extract("b64-payload", max_size_bytes=100)
 
         assert extractor.received == [b"decoded-bytes"]
+
+    def test_allows_decoded_size_equal_to_the_cap(self):
+        service = PdfExtractionService(
+            FakeDecoder(b"x" * 10), FakeExtractor(_document("text"))
+        )
+
+        assert service.extract("b64", max_size_bytes=10).total_pages == 1
+
+    def test_raises_file_too_large_when_decoded_size_exceeds_the_cap(self):
+        service = PdfExtractionService(
+            FakeDecoder(b"x" * 11), FakeExtractor(_document("text"))
+        )
+
+        with pytest.raises(FileTooLargeError):
+            service.extract("b64", max_size_bytes=10)
+
+    def test_raises_file_too_large_before_calling_the_extractor(self):
+        extractor = FakeExtractor(_document("text"))
+        service = PdfExtractionService(FakeDecoder(b"x" * 101), extractor)
+
+        with pytest.raises(FileTooLargeError):
+            service.extract("b64", max_size_bytes=100)
+
+        assert extractor.received == []
 
     def test_propagates_decoder_errors_unchanged(self):
         service = PdfExtractionService(
