@@ -34,16 +34,16 @@ metadata), domain exceptions carrying `status`/`code`/`type_uri` for RFC 9457,
 and the `PdfExtractor` + `PayloadDecoder` abstract ports.
 
 **Acceptance criteria:**
-- [ ] `ExtractedDocument` validates non-empty pages and consistent metadata
-- [ ] Each domain exception has typed `status` (int), `code` (str), `type_uri`
+- [x] `ExtractedDocument` validates non-empty pages and consistent metadata
+- [x] Each domain exception has typed `status` (int), `code` (str), `type_uri`
       (str) attributes
-- [ ] Ports are abstract classes (or Protocols) with clear signatures —
+- [x] Ports are abstract classes (or Protocols) with clear signatures —
       `extract(data: bytes) -> ExtractedDocument`,
       `decode(payload: str) -> bytes`
 
 **Verification:**
-- [ ] Tests pass: `uv run pytest tests/unit/domain -q`
-- [ ] Lint clean: `uv run ruff check .`
+- [x] Tests pass: `uv run pytest tests/unit/domain -q` → 23 passed
+- [x] Lint clean: `uv run ruff check .`
 
 **Dependencies:** Task 1
 
