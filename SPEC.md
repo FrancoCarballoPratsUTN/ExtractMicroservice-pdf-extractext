@@ -22,11 +22,23 @@ or an unhandled exception leaking to the client.
 
 - Python `3.10+`
 - FastAPI (latest stable, Pydantic v2)
+- `pydantic-settings` for operational configuration (`.env` via `app/config.py`)
 - `pypdf` for PDF text extraction
 - `uv` as package manager (`pyproject.toml` + `uv.lock`)
 - `uvicorn` as ASGI server
 - Testing: `pytest`, `httpx`, `pytest-cov`
 - Linting/formatting: `ruff`
+
+## Configuration
+
+Operational values are read from the environment or `.env` (see `.env.example`):
+
+| Env var | Type | Default | Purpose |
+|---|---|---|---|
+| `MAX_SIZE_BYTES` | int | `10485760` (10 MiB) | Maximum allowed size of a decoded PDF |
+
+Error messages, codes, and problem-type URIs are **not** configurable: they are
+part of the HTTP contract and stay in code (see the error catalogue).
 
 ## Commands
 
@@ -168,8 +180,9 @@ Request:
 ```
 
 - `file_base64`: required, standardized (non-urlsafe) Base64 string.
-- `max_size_bytes`: optional, caller-declared cap; default 10 MiB. The service
-  enforces the actual decoded size regardless.
+- `max_size_bytes`: optional, caller-declared cap; default is the configured
+  `MAX_SIZE_BYTES` (10 MiB). The service enforces the actual decoded size
+  regardless.
 
 Response `200 OK`:
 ```json

@@ -5,6 +5,7 @@ description = "PDF text extraction microservice: Base64 in, structured text out.
 requires-python = ">=3.14"
 dependencies = [
     "fastapi>=0.141.1",
+    "pydantic-settings>=2.15.0",
     "pypdf>=6.18.0",
     "uvicorn[standard]>=0.52.4",
 ]
