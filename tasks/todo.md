@@ -7,15 +7,15 @@ create the test/package layout and shared fixture helpers for generating
 in-memory PDFs.
 
 **Acceptance criteria:**
-- [ ] `uv sync` succeeds and locks dependencies (fastapi, pypdf, pydantic,
+- [x] `uv sync` succeeds and locks dependencies (fastapi, pypdf, pydantic,
       uvicorn, pytest, pytest-cov, httpx, ruff)
-- [ ] `pyproject.toml` configures pytest (`testpaths`, `--cov=app`,
+- [x] `pyproject.toml` configures pytest (`testpaths`, `--cov=app`,
       `--cov-fail-under=85`) and ruff (`target-version = py310`)
-- [ ] `conftest.py` exposes a helper that builds minimal in-memory PDF bytes
+- [x] `conftest.py` exposes a helper that builds minimal in-memory PDF bytes
 
 **Verification:**
-- [ ] Tests pass: `uv run pytest`
-- [ ] Lint clean: `uv run ruff check .`
+- [x] Tests pass: `uv run pytest`
+- [x] Lint clean: `uv run ruff check .`
 - [ ] Manual check: `uv run uvicorn app.main:app` not required yet (no app)
 
 **Dependencies:** None
