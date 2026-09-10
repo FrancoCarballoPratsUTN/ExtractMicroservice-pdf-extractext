@@ -111,14 +111,14 @@ port: strict, in-memory Base64 decoding; corrupt payload → `InvalidBase64Error
 result (`NO_EXTRACTABLE_TEXT`), map to `ExtractedDocument`.
 
 **Acceptance criteria:**
-- [ ] Valid payload → `ExtractedDocument` with per-page text + metadata
-- [ ] Decoded size > cap → `FileTooLargeError`
-- [ ] All pages empty → `NoExtractableTextError`
-- [ ] Depends only on domain ports (no pypdf/base64 imports)
+- [x] Valid payload → `ExtractedDocument` with per-page text + metadata
+- [x] Decoded size > cap → `FileTooLargeError` (antes de llamar al extractor)
+- [x] All pages empty → `NoExtractableTextError`
+- [x] Depends only on domain ports (no pypdf/base64 imports)
 
 **Verification:**
-- [ ] Tests pass: `uv run pytest tests/unit/application -q`
-- [ ] Lint clean: `uv run ruff check .`
+- [x] Tests pass: `uv run pytest tests/unit/application -q` → 9 passed
+- [x] Lint clean: `uv run ruff check .`
 
 **Dependencies:** Tasks 3, 4
 
