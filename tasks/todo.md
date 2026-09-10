@@ -134,16 +134,16 @@ result (`NO_EXTRACTABLE_TEXT`), map to `ExtractedDocument`.
 9457 problem-details body builder used by the exception handler.
 
 **Acceptance criteria:**
-- [ ] `ExtractRequest` validates `file_base64` (str, non-empty) and
+- [x] `ExtractRequest` validates `file_base64` (str, non-empty) and
       `max_size_bytes` (positive int, optional)
-- [ ] `ExtractResult` serializes pages + `total_pages` + `total_characters`
-- [ ] Problem-details builder produces `type`/`title`/`status`/`detail`/
+- [x] `ExtractResult` serializes pages + `total_pages` + `total_characters`
+- [x] Problem-details builder produces `type`/`title`/`status`/`detail`/
       `instance`/`code` from a domain exception
-- [ ] All DTOs are `frozen=True`
+- [x] All DTOs are `frozen=True`
 
 **Verification:**
-- [ ] Tests pass: `uv run pytest tests/unit/api -q`
-- [ ] Lint clean: `uv run ruff check .`
+- [x] Tests pass: `uv run pytest tests/unit/api -q` → 8 passed (DTO)
+- [x] Lint clean: `uv run ruff check .`
 
 **Dependencies:** Task 5
 
@@ -154,6 +154,18 @@ result (`NO_EXTRACTABLE_TEXT`), map to `ExtractedDocument`.
 - `tests/unit/api/test_dtos.py`
 
 **Estimated scope:** Small
+
+## Task 6b: Operational config via `.env`
+
+Externalize the hardcoded default size limit to environment configuration.
+Contract values (error messages, codes, type URIs) intentionally stay in code.
+
+- [x] Add `pydantic-settings` dependency
+- [x] `app/config.py`: `Settings` (default 10 MiB, env `MAX_SIZE_BYTES`) + cached `get_settings()`
+- [x] `ExtractRequest.max_size_bytes` default reads from settings (no hardcode)
+- [x] `.env.example` committed; `.env` stays gitignored
+- [x] Tests: settings defaults/override + DTO wiring
+- [x] `uv run pytest` → 61 passed; `ruff check`/`format` clean; SPEC.md updated
 
 ## Task 7: Routes + wiring
 
