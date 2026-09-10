@@ -3,10 +3,12 @@
 import pytest
 from pydantic import ValidationError
 
+from app.api.dto.errors import from_domain_error
 from app.api.dto.requests import ExtractRequest
 from app.api.dto.responses import ExtractResult
 from app.config import get_settings
 from app.domain.entities.extracted_document import ExtractedDocument, ExtractedPage
+from app.domain.exceptions import EncryptedPdfError
 
 
 class TestExtractRequest:
@@ -56,4 +58,20 @@ class TestExtractResult:
             ],
             "total_pages": 2,
             "total_characters": 5,
+        }
+
+
+class TestProblemDetails:
+    def test_serializes_rfc9457_shape_from_domain_error(self):
+        error = EncryptedPdfError("The PDF is encrypted and requires a password.")
+
+        payload = from_domain_error(error, instance="/extract").model_dump()
+
+        assert payload == {
+            "type": "/problems/encrypted_pdf",
+            "title": "Encrypted PDF",
+            "status": 400,
+            "detail": "The PDF is encrypted and requires a password.",
+            "instance": "/extract",
+            "code": "ENCRYPTED_PDF",
         }
