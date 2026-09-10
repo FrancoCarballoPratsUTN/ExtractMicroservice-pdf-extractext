@@ -64,15 +64,15 @@ and the `PdfExtractor` + `PayloadDecoder` abstract ports.
 return `ExtractedDocument`.
 
 **Acceptance criteria:**
-- [ ] Valid multi-page PDF bytes → `ExtractedDocument` with per-page text and
+- [x] Valid multi-page PDF bytes → `ExtractedDocument` with per-page text and
       correct `total_pages`/`total_characters`
-- [ ] Encrypted PDF → `EncryptedPdfError`
-- [ ] Corrupt/unparseable PDF → `PdfCorruptedError`
-- [ ] No pypdf API used outside this adapter
+- [x] Encrypted PDF → `EncryptedPdfError`
+- [x] Corrupt/unparseable PDF → `PdfCorruptedError`
+- [x] No pypdf API used outside this adapter (only `pypdf_extractor.py` imports it)
 
 **Verification:**
-- [ ] Tests pass: `uv run pytest tests/integration/infrastructure -q`
-- [ ] Lint clean: `uv run ruff check .`
+- [x] Tests pass: `uv run pytest tests/integration/infrastructure -q` → 6 passed
+- [x] Lint clean: `uv run ruff check .`
 
 **Dependencies:** Task 2
 
