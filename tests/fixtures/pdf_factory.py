@@ -54,6 +54,13 @@ def build_encrypted_pdf_bytes(pages_text: Sequence[str]) -> bytes:
     return _write(writer)
 
 
+def build_no_text_pdf_bytes() -> bytes:
+    """Build a PDF whose pages have no text content stream at all."""
+    writer = PdfWriter()
+    writer.add_blank_page(width=612, height=792)
+    return _write(writer)
+
+
 def _write(writer: PdfWriter) -> bytes:
     buffer = BytesIO()
     writer.write(buffer)
