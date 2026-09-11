@@ -175,19 +175,19 @@ the app factory in `app/main.py`; run `extract` off the event loop via
 `run_in_threadpool`. Integration-test the full endpoint.
 
 **Acceptance criteria:**
-- [ ] `GET /health` → `200 {"status": "ok"}`
-- [ ] `POST /extract` with valid in-memory PDF → `200` with per-page text +
+- [x] `GET /health` → `200 {"status": "ok"}`
+- [x] `POST /extract` with valid in-memory PDF → `200` with per-page text +
       metadata
-- [ ] Each error catalogue row returns its HTTP status + problem-details body
+- [x] Each error catalogue row returns its HTTP status + problem-details body
       with `Content-Type: application/problem+json`
-- [ ] Extraction executed via `run_in_threadpool`
-- [ ] `/docs` serves OpenAPI
-- [ ] `instance` populated with the request URL
+- [x] Extraction executed via `run_in_threadpool`
+- [x] `/docs` serves OpenAPI
+- [x] `instance` populated with the request URL
 
 **Verification:**
-- [ ] Tests pass: `uv run pytest --cov=app --cov-fail-under=85`
-- [ ] Lint clean: `uv run ruff check . && uv run ruff format .`
-- [ ] Manual check: `uv run uvicorn app.main:app --reload` + `/docs` loads
+- [x] Tests pass: `uv run pytest --cov=app --cov-fail-under=85`
+- [x] Lint clean: `uv run ruff check . && uv run ruff format .`
+- [x] Manual check: `uv run uvicorn app.main:app --reload` + `/docs` loads
 
 **Dependencies:** Task 6
 
@@ -195,8 +195,23 @@ the app factory in `app/main.py`; run `extract` off the event loop via
 - `app/api/routes/health.py`
 - `app/api/routes/extract.py`
 - `app/api/dependencies.py`
+- `app/api/exception_handlers.py`
 - `app/main.py`
 - `tests/integration/api/test_extract_endpoint.py`
 - `tests/integration/api/test_health_endpoint.py`
 
 **Estimated scope:** Medium
+
+## Task 7 addendum: framework discovery
+
+Starlette 0.50 / FastAPI 0.124 changes that shaped the implementation:
+
+- Exceptions raised in handlers run via `run_in_threadpool` (anyio) are re-raised
+  normally; the generic-`Exception` handler is routed through
+  `ServerErrorMiddleware`, which **always re-raises** the original exception
+  after sending the 500 response (so servers can log it). With the default
+  `TestClient` (`raise_server_exceptions=True`) that re-raise reaches the test,
+  so the 500-body assertion uses a dedicated `client_no_raise` fixture.
+- FastAPI keeps `add_exception_handler` registrations in `app.exception_handlers`
+  which are snapshotted into the middleware stack on first request; the
+  `Exception` entry becomes the ServerErrorMiddleware handler.
