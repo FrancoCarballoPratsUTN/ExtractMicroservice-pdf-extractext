@@ -14,6 +14,8 @@ class Settings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
 
+    app_name: str = "Big Pickle"
+    version: str = "0.1.0"
     max_size_bytes: int = DEFAULT_MAX_SIZE_BYTES
 
 
